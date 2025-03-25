@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Instrutores - Gerenciador de Academia</title>
+        <link href="./bibliotecas/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="./css/style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="dashboard">Gerenciador de Academia</a>
+                <div class="navbar-nav">
+                    <a class="nav-link" href="dashboard"><i class="fas fa-home"></i> Dashboard</a>
+                    <a class="nav-link" href="agendamentos"><i class="fas fa-calendar-alt"></i> Agendamentos</a>
+                    <a class="nav-link" href="aulas"><i class="fas fa-book"></i> Aulas</a>
+                    <a class="nav-link" href="cargos"><i class="fas fa-briefcase"></i> Cargos</a>
+                    <a class="nav-link" href="clientes"><i class="fas fa-users"></i> Clientes</a>
+                    <a class="nav-link" href="estoque"><i class="fas fa-dumbbell"></i> Estoque</a>
+                    <a class="nav-link" href="financeiro"><i class="fas fa-dollar-sign"></i> Financeiro</a>
+                    <a class="nav-link" href="funcionarios"><i class="fas fa-user-tie"></i> Funcionários</a>
+                    <a class="nav-link active" href="instrutores"><i class="fas fa-chalkboard-teacher"></i> Instrutores</a>
+                    <a class="nav-link" href="planos"><i class="fas fa-list-alt"></i> Planos</a>
+                    <a class="nav-link" href="vendas"><i class="fas fa-shopping-cart"></i> Vendas</a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mt-4">
+            <h2>Instrutores</h2>
+
+            <table class="table table-striped mt-3" id="tabelaInstrutores">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>CPF</th>
+                        <th>Telefone</th>
+                        <th>Especialidade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="instrutor : ${instrutores}">
+                    <tr class="clickable-row"
+                        th:data-id="${instrutor.id}"
+                        th:data-nome="${instrutor.nome}"
+                        th:data-email="${instrutor.email}"
+                        th:data-cpf="${instrutor.cpf}"
+                        th:data-telefone="${instrutor.telefone}"
+                        th:data-especialidade-id="${instrutor.especialidade != null ? instrutor.especialidade.id : ''}">
+                        <td th:text="${instrutor.id}"></td>
+                        <td th:text="${instrutor.nome}"></td>
+                        <td th:text="${instrutor.email}"></td>
+                        <td th:text="${instrutor.cpf}"></td>
+                        <td th:text="${instrutor.telefone}"></td>
+                        <td th:text="${instrutor.especialidade != null ? instrutor.especialidade.nome : 'Sem Especialidade'}"></td>
+                    </tr>
+                </th:block>
+                </tbody>
+
+            </table>
+
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCadastroInstrutor">
+                <i class="fas fa-plus-circle"></i> Cadastrar Instrutor
+            </button>
+            <button class="btn btn-warning" id="btnEditarInstrutor" disabled data-bs-toggle="modal" data-bs-target="#modalEdicaoInstrutor">
+                <i class="fas fa-edit"></i> Editar Instrutor
+            </button>
+            <button class="btn btn-danger" id="btnRemoverInstrutor" disabled>
+                <i class="fas fa-trash-alt"></i> Remover Instrutor
+            </button>
+            <button class="btn btn-success" onclick="window.location.href = 'especialidades';"><i class="fas fa-user-cog"></i> Especialidades</button>
+
+
+            <a href="dashboard" class="btn btn-secondary">Voltar</a>
+        </div>
+
+        <div class="modal fade" id="modalCadastroInstrutor" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">Cadastrar Instrutor</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formCadastroInstrutor">
+                            <div class="mb-3">
+                                <label for="nomeCadastroInstrutor" class="form-label">Nome</label>
+                                <input type="text" class="form-control" id="nomeCadastroInstrutor" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="emailCadastroInstrutor" class="form-label">E-mail:</label>
+                                <input type="email" id="emailCadastroInstrutor" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="cpfCadastroInstrutor" class="form-label">CPF</label>
+                                <input type="text" class="form-control" id="cpfCadastroInstrutor" maxlength="14">
+                            </div>
+                            <div class="mb-3">
+                                <label for="telefoneCadastroInstrutor" class="form-label">Telefone:</label>
+                                <input type="text" id="telefoneCadastroInstrutor" class="form-control" maxlength="15">
+                            </div>
+                            <div class="mb-3">
+                                <label for="especialidadeCadastroInstrutor" class="form-label">Especialidade</label>
+                                <select class="form-control" id="especialidadeCadastroInstrutor">
+                                    <th:block th:each="especialidade : ${especialidades}">
+                                        <option th:value="${especialidade.id}" th:text="${especialidade.nome}"></option>
+                                    </th:block>
+                                </select>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="submit" id="btnCadastrarInstrutor" class="btn btn-success">Cadastrar Instrutor</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalEdicaoInstrutor" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning text-white">
+                        <h5 class="modal-title">Editar Instrutor</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formEdicaoInstrutor">
+                            <input type="hidden" id="idEdicaoInstrutor">
+
+                            <div class="mb-3">
+                                <label for="nomeEdicaoInstrutor" class="form-label">Nome</label>
+                                <input type="text" class="form-control" id="nomeEdicaoInstrutor" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="emailEdicaoInstrutor" class="form-label">E-mail:</label>
+                                <input type="email" id="emailEdicaoInstrutor" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="cpfEdicaoInstrutor" class="form-label">CPF</label>
+                                <input type="text" class="form-control" id="cpfEdicaoInstrutor" maxlength="14">
+                            </div>
+                            <div class="mb-3">
+                                <label for="telefoneEdicaoInstrutor" class="form-label">Telefone:</label>
+                                <input type="text" id="telefoneEdicaoInstrutor" class="form-control" maxlength="15">
+                            </div>
+                            <div class="mb-3">
+                                <label for="especialidadeEdicaoInstrutor" class="form-label">Especialidade</label>
+                                <select class="form-control" name="especialidadeId" id="especialidadeEdicaoInstrutor">
+                                    <th:block th:each="especialidade : ${especialidades}">
+                                        <option th:value="${especialidade.id}" th:text="${especialidade.nome}"></option>
+                                    </th:block>
+                                </select>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="submit" id="btnSalvarEdicaoInstrutor" class="btn btn-warning text-white">Salvar Alterações</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="./bibliotecas/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="./bibliotecas/jquery/jquery.min.js"></script>
+        <script src="./js/script.js"></script>
+    </body>
+</html>

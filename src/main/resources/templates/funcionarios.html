@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Funcionários - Gerenciador de Academia</title>
+        <link href="./bibliotecas/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="./css/style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="dashboard">Gerenciador de Academia</a>
+                <div class="navbar-nav">
+                    <a class="nav-link" href="dashboard"><i class="fas fa-home"></i> Dashboard</a>
+                    <a class="nav-link" href="agendamentos"><i class="fas fa-calendar-alt"></i> Agendamentos</a>
+                    <a class="nav-link" href="aulas"><i class="fas fa-book"></i> Aulas</a>
+                    <a class="nav-link" href="cargos"><i class="fas fa-briefcase"></i> Cargos</a>
+                    <a class="nav-link" href="clientes"><i class="fas fa-users"></i> Clientes</a>
+                    <a class="nav-link" href="estoque"><i class="fas fa-dumbbell"></i> Estoque</a>
+                    <a class="nav-link" href="financeiro"><i class="fas fa-dollar-sign"></i> Financeiro</a>
+                    <a class="nav-link active" href="funcionarios"><i class="fas fa-user-tie"></i> Funcionários</a>
+                    <a class="nav-link" href="instrutores"><i class="fas fa-chalkboard-teacher"></i> Instrutores</a>
+                    <a class="nav-link" href="planos"><i class="fas fa-list-alt"></i> Planos</a>
+                    <a class="nav-link" href="vendas"><i class="fas fa-shopping-cart"></i> Vendas</a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mt-4">
+            <h2>Funcionários</h2>
+
+            <table class="table table-striped mt-3" id="tabelaFuncionarios">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                        <th>Cargo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="funcionario : ${funcionarios}">
+                    <tr class="clickable-row" 
+                        th:data-id="${funcionario.id}"
+                        th:data-nome="${funcionario.nome}"
+                        th:data-cpf="${funcionario.cpf}"
+                        th:data-cargo-id="${funcionario.cargo != null ? funcionario.cargo.id : ''}">
+                        <td th:text="${funcionario.id}"></td>
+                        <td th:text="${funcionario.nome}"></td>
+                        <td th:text="${funcionario.cpf}"></td>
+                        <td th:text="${funcionario.cargo != null ? funcionario.cargo.nome : 'Sem Cargo'}"></td>
+                    </tr>
+                </th:block>
+                </tbody>
+                
+            </table>
+
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCadastroFuncionario">
+                <i class="fas fa-plus-circle"></i> Cadastrar Funcionário
+            </button>
+            <button class="btn btn-warning" id="btnEditarFuncionario" disabled data-bs-toggle="modal" data-bs-target="#modalEdicaoFuncionario">
+                <i class="fas fa-edit"></i> Editar Funcionário
+            </button>
+            <button class="btn btn-danger" id="btnRemoverFuncionario" disabled>
+                <i class="fas fa-trash-alt"></i> Remover Funcionário
+            </button>
+
+            <a href="dashboard" class="btn btn-secondary">Voltar</a>
+        </div>
+
+        <div class="modal fade" id="modalCadastroFuncionario" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">Cadastrar Funcionário</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formCadastroFuncionario">
+                            <div class="mb-3">
+                                <label for="nomeCadastroFuncionario" class="form-label">Nome</label>
+                                <input type="text" class="form-control" id="nomeCadastroFuncionario" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="cpfCadastroFuncionario" class="form-label">CPF</label>
+                                <input type="text" class="form-control" id="cpfCadastroFuncionario" maxlength="14">
+                            </div>
+                            <div class="mb-3">
+                                <label for="cargoCadastroFuncionario" class="form-label">Cargo</label>
+                                <select class="form-control" id="cargoCadastroFuncionario">
+                                    <th:block th:each="cargo : ${cargos}">
+                                        <option th:value="${cargo.id}" th:text="${cargo.nome}"></option>
+                                    </th:block>
+                                </select>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="submit" id="btnCadastrarFuncionario" class="btn btn-success">Cadastrar Funcionário</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalEdicaoFuncionario" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning text-white">
+                        <h5 class="modal-title">Editar Funcionário</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formEdicaoFuncionario">
+                            <input type="hidden" id="idEdicaoFuncionario">
+                            <div class="mb-3">
+                                <label for="nomeEdicaoFuncionario" class="form-label">Nome</label>
+                                <input type="text" class="form-control" id="nomeEdicaoFuncionario" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="cpfEdicaoFuncionario" class="form-label">CPF</label>
+                                <input type="text" class="form-control" id="cpfEdicaoFuncionario" maxlength="14">
+                            </div>
+                            <div class="mb-3">
+                                <label for="cargoEdicaoFuncionario" class="form-label">Cargo</label>
+                                <select class="form-control" id="cargoEdicaoFuncionario">
+                                    <th:block th:each="cargo : ${cargos}">
+                                        <option th:value="${cargo.id}" th:text="${cargo.nome}"></option>
+                                    </th:block>
+                                </select>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="submit" id="btnSalvarEdicaoFuncionario" class="btn btn-warning text-white">Salvar Alterações</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="./bibliotecas/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="./bibliotecas/jquery/jquery.min.js"></script>
+        <script src="./js/script.js?v=1.0"></script>
+
+    </body>
+</html>

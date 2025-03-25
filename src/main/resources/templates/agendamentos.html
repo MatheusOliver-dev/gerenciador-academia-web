@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Agendamentos - Gerenciador de Academia</title>
+        <link href="./bibliotecas/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="./css/style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    </head>
+
+    <body>
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="dashboard">Gerenciador de Academia</a>
+                <div class="navbar-nav">
+                    <a class="nav-link" href="dashboard"><i class="fas fa-home"></i> Dashboard</a>
+                    <a class="nav-link active" href="agendamentos"><i class="fas fa-calendar-alt"></i> Agendamentos</a>
+                    <a class="nav-link" href="aulas"><i class="fas fa-book"></i> Aulas</a>
+                    <a class="nav-link" href="cargos"><i class="fas fa-briefcase"></i> Cargos</a>
+                    <a class="nav-link" href="clientes"><i class="fas fa-users"></i> Clientes</a>
+                    <a class="nav-link" href="estoque"><i class="fas fa-dumbbell"></i> Estoque</a>
+                    <a class="nav-link" href="financeiro"><i class="fas fa-dollar-sign"></i> Financeiro</a>
+                    <a class="nav-link" href="funcionarios"><i class="fas fa-user-tie"></i> Funcionários</a>
+                    <a class="nav-link" href="instrutores"><i class="fas fa-chalkboard-teacher"></i> Instrutores</a>
+                    <a class="nav-link" href="planos"><i class="fas fa-list-alt"></i> Planos</a>
+                    <a class="nav-link" href="vendas"><i class="fas fa-shopping-cart"></i> Vendas</a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mt-4">
+            <h2>Agendamentos</h2>
+
+            <table class="table table-striped mt-3" id="tabelaAgendamentos">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Aula</th>
+                        <th>Data e Hora Início</th>
+                        <th>Data e Hora Fim</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="agendamento : ${agendamentos}">
+                        <td th:text="${agendamento.id}"></td>
+                        <td th:text="${agendamento.aula.nome}"></td>
+                        <td th:text="${#temporals.format(agendamento.dataHoraInicio, 'dd/MM/yyyy HH:mm')}"></td>
+                        <td th:text="${#temporals.format(agendamento.dataHoraFim, 'dd/MM/yyyy HH:mm')}"></td>
+                        <td th:text="${agendamento.status}"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCadastroAgendamento"> <i class="fas fa-plus-circle"></i> Cadastrar Novo
+                Agendamento</button>
+            <button class="btn btn-warning" id="btnEditarAgendamento" disabled data-bs-toggle="modal"
+                    data-bs-target="#modalEdicaoAgendamento"><i class="fas fa-edit"></i> Editar Agendamento</button>
+            <button class="btn btn-danger" id="btnRemoverAgendamento" disabled><i class="fas fa-trash-alt"></i> Remover Agendamento</button>
+
+            <a href="dashboard" class="btn btn-secondary">Voltar</a>
+        </div>
+
+        <div class="modal fade" id="modalCadastroAgendamento" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">Cadastrar Agendamento</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formCadastroAgendamento">
+                            <div class="mb-3">
+                                <label for="aulaCadastroAgendamento" class="form-label">Aula:</label>
+                                <select id="aulaCadastroAgendamento" class="form-select">
+                                    <th:block th:each="aula : ${aulas}">
+                                        <option th:value="${aula.id}" th:text="${aula.nome}"></option>
+                                    </th:block>
+                                </select>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Data e Hora Início:</label>
+                                    <input type="datetime-local" id="inicioCadastroAgendamento" class="form-control" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Data e Hora Fim:</label>
+                                    <input type="datetime-local" id="fimCadastroAgendamento" class="form-control" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Observações:</label>
+                                <textarea id="obsCadastroAgendamento" class="form-control" rows="3"></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Status:</label>
+                                <select id="statusCadastroAgendamento" class="form-select" required>
+                                    <option>PENDENTE</option>
+                                    <option>CONCLUÍDO</option>
+                                    <option>REMARCADO</option>
+                                    <option>CANCELADO</option>
+                                </select>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" id="btnCadastrarAgendamento" class="btn btn-success">Cadastrar Agendamento</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalEdicaoAgendamento" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning text-white">
+                        <h5 class="modal-title">Editar Agendamento</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formEdicaoAgendamento">
+                            <input type="hidden" id="idEdicaoAgendamento">
+
+                            <div class="mb-3">
+                                <label for="aulaEdicaoAgendamento" class="form-label">Aula:</label>
+                                <select id="aulaEdicaoAgendamento" name="aulaId" class="form-select">
+                                    <th:block th:each="aula : ${aulas}">
+                                        <option th:value="${aula.id}" th:text="${aula.nome}"></option>
+                                    </th:block>
+                                </select>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Data e Hora Início:</label>
+                                    <input type="datetime-local" id="inicioEdicaoAgendamento" class="form-control" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Data e Hora Fim:</label>
+                                    <input type="datetime-local" id="fimEdicaoAgendamento" class="form-control" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Observações:</label>
+                                <textarea id="obsEdicaoAgendamento" class="form-control" rows="3"></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Status:</label>
+                                <select id="statusEdicaoAgendamento" class="form-select" required>
+                                    <option>PENDENTE</option>
+                                    <option>CONCLUÍDO</option>
+                                    <option>REMARCADO</option>
+                                    <option>CANCELADO</option>
+                                </select>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" id="btnSalvarEdicaoAgendamento" class="btn btn-warning text-white">Salvar Alterações</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <script src="./bibliotecas/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="./bibliotecas/jquery/jquery.min.js"></script>
+        <script src="./js/script.js"></script>
+
+    </body>
+
+</html>
